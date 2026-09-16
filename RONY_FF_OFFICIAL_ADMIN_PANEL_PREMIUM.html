@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050914">
+<title>RONYFFOFFICIAL — Admin Command</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+ --bg:#04060d;--bg2:#070b15;--panel:#0a101d;--panel2:#0d1423;--line:#17253b;
+ --cyan:#00d9ff;--blue:#328cff;--violet:#8a5cff;--green:#19e59a;--gold:#ffc247;--red:#ff456d;
+ --text:#f5f9ff;--muted:#8da0b8;--shadow:0 20px 60px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}html,body{margin:0;background:
+ radial-gradient(900px 500px at 80% -10%,rgba(0,217,255,.12),transparent 60%),
+ radial-gradient(700px 500px at 10% 10%,rgba(138,92,255,.10),transparent 65%),var(--bg);
+ color:var(--text);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:38px 38px}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.app{min-height:100vh}.sidebar{position:fixed;z-index:50;left:0;top:0;bottom:0;width:280px;padding:18px 14px;background:linear-gradient(180deg,rgba(8,14,26,.98),rgba(4,7,14,.99));border-right:1px solid #15243a;box-shadow:25px 0 80px rgba(0,0,0,.35);overflow:auto}
+.brand{display:flex;align-items:center;gap:12px;padding:10px 10px 20px;border-bottom:1px solid var(--line)}.brand-logo,.avatar,.login-logo{display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#0c1d31,#08101d);border:1px solid rgba(0,217,255,.75);box-shadow:0 0 30px rgba(0,217,255,.16)}
+.brand-logo{width:52px;height:52px;border-radius:16px;font-size:25px}.brand-logo img,.avatar img,.login-logo img{width:100%;height:100%;object-fit:cover}
+.brand h1{margin:0;font-size:15px;letter-spacing:1.4px}.brand small{display:block;color:var(--cyan);margin-top:4px;font-size:9px;letter-spacing:2.6px;font-weight:800}
+.nav-title{padding:20px 10px 7px;color:#50637c;font-size:9px;letter-spacing:2px;font-weight:900}.nav button{width:100%;display:flex;align-items:center;gap:12px;border:1px solid transparent;background:transparent;color:#9fb1c8;padding:12px 12px;border-radius:12px;margin:3px 0;text-align:left;font-weight:750;transition:.18s}
+.nav button:hover{background:#0b1626;color:#fff;border-color:#1a3550}.nav button.active{background:linear-gradient(100deg,rgba(0,217,255,.14),rgba(50,140,255,.08));border-color:rgba(0,217,255,.42);color:#fff;box-shadow:inset 3px 0 0 var(--cyan),0 8px 25px rgba(0,217,255,.06)}
+.ico{width:25px;text-align:center;font-size:18px}.badge{margin-left:auto;min-width:21px;padding:3px 6px;border-radius:20px;background:#29111b;color:#ff7190;font-size:9px;text-align:center}
+.nav .logout{margin-top:22px;color:#ff7090}.side-foot{padding:15px 10px;color:#53677e;font-size:9px;line-height:1.5}
+.main{margin-left:280px;min-height:100vh}.topbar{height:76px;position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:18px;padding:0 28px;background:rgba(5,8,15,.78);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+.menu-btn{display:none;border:1px solid var(--line);background:#0b1422;color:#dff8ff;border-radius:10px;padding:8px 11px}.top-title{flex:1}.top-title b{font-size:13px;letter-spacing:1px}.top-title span{display:block;color:#5f748d;font-size:10px;margin-top:3px}
+.top-actions{display:flex;align-items:center;gap:12px}.connection{display:flex;align-items:center;gap:7px;border:1px solid #18334a;border-radius:30px;padding:8px 11px;color:#88a3ba;font-size:10px}.dot-live{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.admin-mini{display:flex;align-items:center;gap:9px}.avatar{width:38px;height:38px;border-radius:50%;font-size:17px}.admin-mini strong{font-size:11px}.admin-mini small{display:block;color:#5e748d;font-size:9px;margin-top:2px}
+.content{padding:26px;max-width:1700px;margin:auto}.page{display:none}.page.active{display:block}
+.hero{position:relative;overflow:hidden;padding:30px;border:1px solid #1b3c5a;border-radius:22px;background:linear-gradient(115deg,rgba(10,25,42,.94),rgba(9,14,27,.92));box-shadow:var(--shadow)}
+.hero:after{content:"RONY";position:absolute;right:-25px;bottom:-42px;font-size:125px;font-weight:1000;color:rgba(0,217,255,.025);letter-spacing:10px}.eyebrow{font-size:9px;color:var(--cyan);font-weight:900;letter-spacing:2.5px}.hero h2{margin:9px 0 7px;font-size:30px}.hero p{margin:0;color:#8da3ba;font-size:12px}.hero-actions{position:absolute;right:25px;top:25px;display:flex;gap:8px}
+.grid{display:grid;gap:15px}.grid4{grid-template-columns:repeat(4,1fr);margin-top:16px}.grid3{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:repeat(2,1fr)}
+.stat{min-height:130px;padding:18px;border-radius:17px;background:linear-gradient(145deg,#0a121f,#080e19);border:1px solid var(--line);box-shadow:0 10px 35px rgba(0,0,0,.18)}.stat .label{font-size:9px;letter-spacing:1.5px;color:#6f849d;font-weight:900}.stat strong{display:block;font-size:29px;margin:13px 0 4px}.stat small{font-size:9px;color:#627991}.cyan{border-color:#16445a}.green{border-color:#174b3c}.violet{border-color:#302254}.gold{border-color:#4a3a1b}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px}.section-head h2{margin:0;font-size:23px}.section-head p{margin:4px 0 0;color:#647991;font-size:10px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #20344c;background:#0c1524;color:#d7e6f4;border-radius:10px;padding:10px 14px;font-weight:800;font-size:11px}.btn:hover{border-color:#2d597b;background:#101d30}.btn.primary{border:0;background:linear-gradient(110deg,#00bfff,#586cff);box-shadow:0 8px 24px rgba(0,170,255,.18);color:#fff}.btn.success{border-color:#1a634c;color:#55edb5}.btn.danger{border-color:#5c1d31;color:#ff7190}.btn.gold{border-color:#60491b;color:#ffd16a}
+.card{background:rgba(8,14,24,.91);border:1px solid var(--line);border-radius:17px;padding:17px;box-shadow:0 12px 45px rgba(0,0,0,.18)}.mt{margin-top:16px}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.card-head h3{margin:0;font-size:14px}.muted{color:#657b93;font-size:10px}
+.table-wrap{overflow:auto;border:1px solid #101e30;border-radius:12px}.table{width:100%;border-collapse:collapse;min-width:720px}.table th{background:#0b1726;color:#7691ab;font-size:9px;letter-spacing:1px;text-align:left;padding:12px;white-space:nowrap}.table td{padding:12px;border-top:1px solid #101d2d;color:#c9d6e3;font-size:11px;white-space:nowrap}.table tr:hover td{background:rgba(0,217,255,.025)}
+.pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:20px;background:#10392e;color:#45e9b0;font-size:8px;font-weight:900;letter-spacing:.7px}.pill.pending{background:#3d2d0e;color:#ffd267}.pill.red{background:#3b1421;color:#ff7692}.pill.blue{background:#0c2d46;color:#61cfff}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}.input{background:#070d17;border:1px solid #1a3047;color:#fff;outline:0;border-radius:10px;padding:11px 12px;width:100%}.toolbar .input{max-width:340px}.input:focus{border-color:#24709a;box-shadow:0 0 0 3px rgba(0,217,255,.06)}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field label{display:block;color:#6e91ae;font-size:9px;letter-spacing:1.2px;font-weight:900;margin-bottom:6px}.field.full{grid-column:1/-1}.field textarea{resize:vertical}.hint{color:#5d748c;font-size:9px;line-height:1.5}
+.duration-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.duration{padding:11px;border:1px solid #172d42;border-radius:11px;background:#08111e}.duration label{font-size:9px;color:#a9c1d7}.duration .input{margin-top:8px;padding:9px}
+.quick{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.quick .btn{padding:17px 8px;text-align:center;line-height:1.8}
+.activity{display:grid;gap:10px}.act{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid #12243a;border-radius:10px;background:#09111d}.act i{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 13px var(--cyan)}.act b{font-size:10px}.act span{display:block;color:#5f758c;font-size:9px;margin-top:3px}
+.bars{height:190px;display:flex;align-items:end;gap:8px;padding:15px 4px 28px}.bar{flex:1;min-height:14px;border:1px solid #1a6a89;border-bottom:0;border-radius:6px 6px 0 0;background:linear-gradient(180deg,rgba(0,217,255,.9),rgba(33,80,150,.18));position:relative}.bar span{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:8px;color:#59728b}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.76);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modal-box{width:min(760px,100%);max-height:92vh;overflow:auto;background:#08101c;border:1px solid #245574;border-radius:20px;padding:20px;box-shadow:0 30px 100px #000}.close{border:0;background:transparent;color:#7790a8;font-size:25px}
+.toast{position:fixed;right:20px;bottom:20px;z-index:200;display:none;max-width:360px;padding:12px 15px;border-radius:11px;background:#0b1726;border:1px solid #2b6687;color:#eaf7ff;font-size:11px;box-shadow:0 15px 50px #000}.toast.show{display:block}
+.login{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(700px 500px at 50% 0,rgba(0,217,255,.12),transparent 65%),#03050b}.login-card{width:min(440px,100%);padding:30px;border:1px solid #1d4d6d;border-radius:24px;background:rgba(7,13,23,.96);box-shadow:0 35px 120px #000}.login-logo{width:82px;height:82px;border-radius:24px;margin:0 auto 15px;font-size:32px}.login-title{text-align:center}.login-title h1{margin:0;font-size:21px;letter-spacing:1.5px}.login-title p{margin:6px 0 24px;color:#637990;font-size:9px;letter-spacing:2px}.login .field{margin-bottom:13px}.login-error{display:none;margin-bottom:12px;padding:10px;border-radius:9px;background:#391522;border:1px solid #6e233a;color:#ff91a9;font-size:10px}.login-footer{text-align:center;color:#526981;font-size:9px;margin-top:13px}.photo-row{display:flex;align-items:center;gap:13px}.photo-preview{width:55px;height:55px;border-radius:50%;object-fit:cover;border:1px solid var(--cyan);background:#07111f}
+@media(max-width:1150px){.grid4{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:repeat(3,1fr)}.duration-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:850px){.sidebar{transform:translateX(-105%);transition:.2s}.sidebar.open{transform:none}.main{margin-left:0}.menu-btn{display:block}.topbar{padding:0 15px}.connection{display:none}.content{padding:15px}.hero{padding:22px}.hero-actions{position:static;margin-top:16px}.form-grid,.grid2,.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}.quick{grid-template-columns:1fr 1fr}.duration-grid{grid-template-columns:1fr 1fr}.top-title span{display:none}}
+@media(max-width:480px){.grid4{grid-template-columns:1fr}.hero h2{font-size:23px}.admin-mini>div:last-child{display:none}.quick{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column}.actions{width:100%}.actions .btn{flex:1}}
+</style>
+</head>
+<body>
+<div class="login" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo" id="loginLogo">♛</div>
+    <div class="login-title"><h1>RONYFFOFFICIAL</h1><p>SECURE ADMIN COMMAND CENTER</p></div>
+    <div class="login-error" id="loginError"></div>
+    <form id="loginForm">
+      <div class="field"><label>ADMIN EMAIL</label><input class="input" id="loginEmail" type="email" autocomplete="username" required placeholder="admin@example.com"></div>
+      <div class="field"><label>PASSWORD</label><input class="input" id="loginPassword" type="password" autocomplete="current-password" required placeholder="Your Supabase Auth password"></div>
+      <button class="btn primary" style="width:100%;padding:13px" id="loginBtn">ENTER COMMAND CENTER</button>
+    </form>
+    <div class="login-footer">Access is authenticated through your existing Supabase Auth account and checked against the public profile role.</div>
+  </div>
+</div>
+
+<div class="app hidden" id="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-logo" id="brandLogo">♛</div><div><h1>RONYFFOFFICIAL</h1><small>ADMIN COMMAND</small></div></div>
+  <nav class="nav">
+    <div class="nav-title">COMMAND</div>
+    <button class="active" data-page="dashboard"><span class="ico">⌂</span>Dashboard</button>
+    <button data-page="products"><span class="ico">◈</span>Products</button>
+    <button data-page="add-product"><span class="ico">＋</span>Add Product</button>
+    <button data-page="orders"><span class="ico">🛒</span>Orders <span class="badge" id="ordersBadge">0</span></button>
+    <button data-page="users"><span class="ico">♟</span>Users</button>
+    <button data-page="resellers"><span class="ico">♜</span>Resellers</button>
+    <button data-page="payments"><span class="ico">₹</span>Payment Requests <span class="badge" id="paymentBadge">0</span></button>
+    <div class="nav-title">DATA & TOOLS</div>
+    <button data-page="licenses"><span class="ico">🔑</span>License Keys</button>
+    <button data-page="support"><span class="ico">◌</span>Support Tickets</button>
+    <button data-page="telegram"><span class="ico">✈</span>Telegram Channels</button>
+    <button data-page="wallets"><span class="ico">◉</span>Wallets</button>
+    <div class="nav-title">SYSTEM</div>
+    <button data-page="settings"><span class="ico">⚙</span>Settings</button>
+    <button class="logout" id="logoutBtn"><span class="ico">⏻</span>Logout</button>
+  </nav>
+  <div class="side-foot">LIVE DATA MODE<br>RONYFFOFFICIAL • SUPABASE</div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <div class="top-title"><b id="pageTitle">Dashboard</b><span>REAL-TIME ADMIN OPERATIONS</span></div>
+  <div class="top-actions"><div class="connection"><i class="dot-live"></i><span id="connectionText">Checking connection…</span></div><div class="admin-mini"><div class="avatar" id="topAvatar">♛</div><div><strong id="adminName">Admin</strong><small>Authenticated</small></div></div></div>
+</header>
+
+<div class="content">
+<section class="page active" id="page-dashboard">
+  <div class="hero"><div class="eyebrow">⚡ ADMIN COMMAND CENTER</div><h2>Welcome back, Admin 👑</h2><p>Manage your live products, users, resellers, orders, payments, licenses and support from one secure panel.</p><div class="hero-actions"><button class="btn" onclick="refreshAll()">↻ Sync Live Data</button><button class="btn primary" onclick="showPage('add-product')">＋ New Product</button></div></div>
+  <div class="grid grid4">
+    <div class="stat cyan"><span class="label">PRODUCTS</span><strong id="sProducts">—</strong><small>public.products</small></div>
+    <div class="stat violet"><span class="label">USERS</span><strong id="sUsers">—</strong><small>public.profiles</small></div>
+    <div class="stat green"><span class="label">RESELLER ACCOUNTS</span><strong id="sResellers">—</strong><small>public.reseller_accounts</small></div>
+    <div class="stat gold"><span class="label">PENDING DEPOSITS</span><strong id="sPayments">—</strong><small>public.deposits</small></div>
+  </div>
+  <div class="grid grid2 mt">
+    <div class="card"><div class="card-head"><h3>◈ Recent Purchases</h3><button class="btn" onclick="showPage('orders')">View All</button></div><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>USER</th><th>PRODUCT</th><th>PRICE</th><th>STATUS</th><th>DATE</th></tr></thead><tbody id="recentOrders"><tr><td colspan="6">Syncing…</td></tr></tbody></table></div></div>
+    <div class="card"><div class="card-head"><h3>◉ Sales Activity</h3><span class="muted">Recent purchases</span></div><div class="bars" id="salesBars"></div></div>
+  </div>
+  <div class="grid grid2 mt">
+    <div class="card"><div class="card-head"><h3>⚡ Quick Actions</h3></div><div class="quick"><button class="btn" onclick="showPage('add-product')">◈<br>Add Product</button><button class="btn" onclick="showPage('orders')">🛒<br>Orders</button><button class="btn" onclick="showPage('users')">♟<br>Users</button><button class="btn" onclick="showPage('resellers')">♜<br>Resellers</button><button class="btn" onclick="showPage('payments')">₹<br>Deposits</button><button class="btn" onclick="showPage('licenses')">🔑<br>Licenses</button></div></div>
+    <div class="card"><div class="card-head"><h3>◉ Live Activity</h3><span class="muted">This session</span></div><div class="activity" id="activity"></div></div>
+  </div>
+</section>
+
+<section class="page" id="page-products">
+ <div class="section-head"><div><h2>Products</h2><p>Live records from public.products</p></div><div class="actions"><button class="btn" onclick="loadProducts()">↻ Refresh</button><button class="btn primary" onclick="showPage('add-product')">＋ Add Product</button></div></div>
+ <div class="toolbar"><input class="input" id="productSearch" placeholder="Search name or description…" oninput="renderProducts()"><select class="input" id="productStatus" style="max-width:170px" onchange="renderProducts()"><option value="all">All Status</option><option value="true">Active</option><option value="false">Inactive</option></select></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>PRODUCT</th><th>USER PRICE</th><th>RESELLER PRICE</th><th>DURATION</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody id="productsTable"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-add-product">
+ <div class="section-head"><div><h2>Add Product</h2><p>Create real product records in public.products</p></div><button class="btn" onclick="showPage('products')">← Products</button></div>
+ <div class="card"><div class="notice">Each selected duration creates one real row in <b>public.products</b>. The form uses the fields already present in your project: name, description, user_price, reseller_price, duration_days, telegram_url and is_active.</div>
+ <form id="productForm"><div class="form-grid">
+  <div class="field"><label>PRODUCT NAME</label><input class="input" id="pName" required placeholder="e.g. RONY FF VIP"></div>
+  <div class="field"><label>TELEGRAM URL</label><input class="input" id="pTelegram" placeholder="https://t.me/..."></div>
+  <div class="field full"><label>DESCRIPTION</label><textarea class="input" id="pDescription" rows="3" placeholder="Product details"></textarea></div>
+  <div class="field full"><label>DURATION + USER / RESELLER PRICE</label><div class="duration-grid">
+    <div class="duration"><label><input type="checkbox" class="dur-check" data-days="1"> 1 DAY</label><input class="input dur-user" data-days="1" type="number" min="0" step=".01" placeholder="User ₹"><input class="input dur-reseller" data-days="1" type="number" min="0" step=".01" placeholder="Reseller ₹"></div>
+    <div class="duration"><label><input type="checkbox" class="dur-check" data-days="3"> 3 DAYS</label><input class="input dur-user" data-days="3" type="number" min="0" step=".01" placeholder="User ₹"><input class="input dur-reseller" data-days="3" type="number" min="0" step=".01" placeholder="Reseller ₹"></div>
+    <div class="duration"><label><input type="checkbox" class="dur-check" data-days="7"> 7 DAYS</label><input class="input dur-user" data-days="7" type="number" min="0" step=".01" placeholder="User ₹"><input class="input dur-reseller" data-days="7" type="number" min="0" step=".01" placeholder="Reseller ₹"></div>
+    <div class="duration"><label><input type="checkbox" class="dur-check" data-days="15"> 15 DAYS</label><input class="input dur-user" data-days="15" type="number" min="0" step=".01" placeholder="User ₹"><input class="input dur-reseller" data-days="15" type="number" min="0" step=".01" placeholder="Reseller ₹"></div>
+    <div class="duration"><label><input type="checkbox" class="dur-check" data-days="30"> 30 DAYS</label><input class="input dur-user" data-days="30" type="number" min="0" step=".01" placeholder="User ₹"><input class="input dur-reseller" data-days="30" type="number" min="0" step=".01" placeholder="Reseller ₹"></div>
+  </div></div>
+  <div class="field"><label>STATUS</label><select class="input" id="pActive"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+ </div><button class="btn primary" style="margin-top:16px" type="submit">SAVE REAL PRODUCT(S)</button></form></div>
+</section>
+
+<section class="page" id="page-orders">
+ <div class="section-head"><div><h2>Orders</h2><p>Live records from public.purchases</p></div><button class="btn" onclick="loadOrders()">↻ Refresh</button></div>
+ <div class="toolbar"><input class="input" id="orderSearch" placeholder="Search user, product, order ID…" oninput="renderOrders()"></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>USER ID</th><th>PRODUCT</th><th>PRICE</th><th>KEY</th><th>STATUS</th><th>PURCHASED</th></tr></thead><tbody id="ordersTable"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-users">
+ <div class="section-head"><div><h2>Users</h2><p>Live records from public.profiles</p></div><button class="btn" onclick="loadUsers()">↻ Refresh</button></div>
+ <div class="toolbar"><input class="input" id="userSearch" placeholder="Search username or email…" oninput="renderUsers()"></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>USER ID</th><th>USERNAME</th><th>EMAIL</th><th>BALANCE</th><th>ROLE</th><th>ACTIVE</th><th>ACTIONS</th></tr></thead><tbody id="usersTable"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-resellers">
+ <div class="section-head"><div><h2>Resellers</h2><p>Live accounts from public.reseller_accounts</p></div><button class="btn" onclick="loadResellers()">↻ Refresh</button></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>RESELLER ID</th><th>USERNAME</th><th>OWNER</th><th>PLAN</th><th>BALANCE</th><th>COMMISSION</th><th>PERMANENT</th><th>CREATED</th></tr></thead><tbody id="resellersTable"><tr><td colspan="8">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-payments">
+ <div class="section-head"><div><h2>Payment Requests</h2><p>Deposit approval queue from public.deposits</p></div><button class="btn" onclick="loadDeposits()">↻ Refresh</button></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>USER</th><th>METHOD</th><th>AMOUNT</th><th>MOBILE</th><th>TRANSACTION / UTR</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="paymentsTable"><tr><td colspan="8">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-licenses">
+ <div class="section-head"><div><h2>License Keys</h2><p>Live records from public.license_keys</p></div><button class="btn" onclick="loadLicenses()">↻ Refresh</button></div>
+ <div class="toolbar"><input class="input" id="licenseSearch" placeholder="Search key, device, product…" oninput="renderLicenses()"></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>PRODUCT</th><th>LICENSE KEY</th><th>DURATION</th><th>STATUS</th><th>DEVICE</th><th>EXPIRES</th><th>ACTION</th></tr></thead><tbody id="licensesTable"><tr><td colspan="8">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-support">
+ <div class="section-head"><div><h2>Support Tickets</h2><p>Live records from public.support_tickets</p></div><button class="btn" onclick="loadSupport()">↻ Refresh</button></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>USER</th><th>SUBJECT</th><th>STATUS</th><th>PRIORITY</th><th>CREATED</th><th>ACTION</th></tr></thead><tbody id="supportTable"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-telegram">
+ <div class="section-head"><div><h2>Telegram Channels</h2><p>Live records from public.telegram_channels</p></div><button class="btn" onclick="loadTelegram()">↻ Refresh</button></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>NAME</th><th>URL</th><th>ACTIVE</th><th>CREATED</th></tr></thead><tbody id="telegramTable"><tr><td colspan="5">Loading…</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-wallets">
+ <div class="section-head"><div><h2>Wallets</h2><p>Live records from public.wallets and wallet_transactions</p></div><button class="btn" onclick="loadWallets()">↻ Refresh</button></div>
+ <div class="grid grid2">
+  <div class="card"><div class="card-head"><h3>Wallets</h3></div><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>USER</th><th>BALANCE</th><th>UPDATED</th></tr></thead><tbody id="walletsTable"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></div>
+  <div class="card"><div class="card-head"><h3>Recent Wallet Transactions</h3></div><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>USER</th><th>AMOUNT</th><th>TYPE</th><th>DATE</th></tr></thead><tbody id="walletTxTable"><tr><td colspan="5">Loading…</td></tr></tbody></table></div></div>
+ </div>
+</section>
+
+<section class="page" id="page-settings">
+ <div class="section-head"><div><h2>Settings</h2><p>Local presentation settings + connection information</p></div></div>
+ <div class="card"><div class="form-grid">
+  <div class="field"><label>STORE NAME</label><input class="input" id="storeName" value="RONYFFOFFICIAL"></div>
+  <div class="field"><label>SUPABASE PROJECT</label><input class="input" value="dgknhptbbozshyfiyobo.supabase.co" readonly></div>
+  <div class="field full"><label>ADMIN PHOTO</label><div class="photo-row"><img class="photo-preview" id="settingsPhotoPreview" alt=""><input class="input" id="adminPhotoInput" type="file" accept="image/*"></div><div class="hint">Stored locally on this device and shown on login, sidebar and top bar. It does not upload your private photo to Supabase.</div></div>
+  <div class="field full"><label>SECURITY</label><div class="notice">The browser uses the Supabase publishable key only. Admin access is granted by your authenticated session and the <b>profiles.role</b> value. Full CRUD still depends on the RLS policies in your Supabase project; this panel never uses a service-role secret.</div></div>
+ </div></div>
+</section>
+</div></main></div>
+
+<div class="modal" id="editProductModal"><div class="modal-box"><div class="card-head"><h3>Edit Product</h3><button class="close" onclick="closeModal('editProductModal')">×</button></div><form id="editProductForm"><input type="hidden" id="editId"><div class="form-grid"><div class="field"><label>NAME</label><input class="input" id="editName" required></div><div class="field"><label>USER PRICE</label><input class="input" id="editUserPrice" type="number" min="0" step=".01"></div><div class="field"><label>RESELLER PRICE</label><input class="input" id="editResellerPrice" type="number" min="0" step=".01"></div><div class="field"><label>DURATION DAYS</label><input class="input" id="editDuration" type="number" min="0" step=".01"></div><div class="field"><label>STATUS</label><select class="input" id="editActive"><option value="true">Active</option><option value="false">Inactive</option></select></div><div class="field"><label>TELEGRAM URL</label><input class="input" id="editTelegram"></div><div class="field full"><label>DESCRIPTION</label><textarea class="input" id="editDescription" rows="4"></textarea></div></div><button class="btn primary" style="margin-top:15px" type="submit">SAVE CHANGES</button></form></div></div>
+
+<div class="toast" id="toast"></div>
+<script>
+const SUPABASE_URL='https://dgknhptbbozshyfiyobo.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_NEHCtr3Y0o8FctOz5Jm59A_P4GhFAQd';
+const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id);
+const state={products:[],users:[],resellers:[],orders:[],deposits:[],licenses:[],support:[],telegram:[],wallets:[],walletTx:[]};
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const money=v=>`₹${Number(v||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+const date=v=>v?new Date(v).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'—';
+const val=(o,...keys)=>{for(const k of keys)if(o&&o[k]!==undefined&&o[k]!==null&&o[k]!=='')return o[k];return null};
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('show'),3000)}
+function logActivity(title,detail){const box=$('activity');const el=document.createElement('div');el.className='act';el.innerHTML=`<i></i><div><b>${esc(title)}</b><span>${esc(detail||'')}</span></div>`;box.prepend(el);while(box.children.length>6)box.lastChild.remove()}
+function statusP(s){const x=String(s??'—').toLowerCase();let c='';if(['pending','processing','open'].includes(x))c='pending';if(['rejected','cancelled','closed','disabled','inactive'].includes(x))c='red';if(['active','approved','completed','paid','resolved'].includes(x))c='';else if(!c)c='blue';return `<span class="pill ${c}">${esc(String(s??'—').toUpperCase())}</span>`}
+async function sb(path,opts={}){const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...opts,headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:'Bearer '+(state.session?.access_token||SUPABASE_PUBLISHABLE_KEY),'Content-Type':'application/json',...(opts.headers||{})}});const text=await r.text();let data=null;try{data=text?JSON.parse(text):null}catch{}if(!r.ok){const msg=data?.message||data?.hint||data?.error||text||('HTTP '+r.status);throw new Error(msg)}return data}
+async function requireAdmin(session){if(!session)return false;state.session=session;let p=null;try{p=await sb('profiles?select=id,username,email,role,is_active&id=eq.'+encodeURIComponent(session.user.id)+'&limit=1')}catch(e){throw new Error('Admin profile check failed: '+e.message)}if(!p?.length)throw new Error('No profile found for this account.');const role=String(p[0].role||'').toUpperCase();if(!['ADMIN','SUPER_ADMIN','OWNER'].includes(role))throw new Error('This account is not marked as ADMIN in profiles.');if(p[0].is_active===false)throw new Error('This admin profile is inactive.');state.profile=p[0];return true}
+function showLogin(msg=''){ $('app').classList.add('hidden');$('loginScreen').style.display='flex';if(msg){$('loginError').textContent=msg;$('loginError').style.display='block'}else $('loginError').style.display='none'}
+function showApp(){ $('loginScreen').style.display='none';$('app').classList.remove('hidden');$('adminName').textContent=state.profile?.username||state.profile?.email||'Admin';$('connectionText').textContent='Supabase connected';applyPhoto();refreshAll()}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('loginBtn');btn.disabled=true;btn.textContent='AUTHORIZING…';$('loginError').style.display='none';try{const {data,error}=await sbClient.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});if(error)throw error;await requireAdmin(data.session);showApp();toast('Admin authentication successful.');logActivity('Admin login','Live Supabase session authenticated')}catch(err){await sbClient.auth.signOut();$('loginError').textContent=err.message||'Login failed';$('loginError').style.display='block'}finally{btn.disabled=false;btn.textContent='ENTER COMMAND CENTER'}});
+$('logoutBtn').onclick=async()=>{if(confirm('Logout from the admin command center?')){await sbClient.auth.signOut();state.session=null;showLogin('Logged out successfully.')}};
+$('menuBtn').onclick=()=>$('sidebar').classList.toggle('open');
+document.querySelectorAll('.nav button[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+const titles={dashboard:'Dashboard','products':'Products','add-product':'Add Product','orders':'Orders','users':'Users','resellers':'Resellers','payments':'Payment Requests','licenses':'License Keys','support':'Support Tickets','telegram':'Telegram Channels','wallets':'Wallets','settings':'Settings'};
+function showPage(name){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+name)?.classList.add('active');document.querySelectorAll('.nav button[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===name));$('pageTitle').textContent=titles[name]||name;$('sidebar').classList.remove('open');const map={products:loadProducts,orders:loadOrders,users:loadUsers,resellers:loadResellers,payments:loadDeposits,licenses:loadLicenses,support:loadSupport,telegram:loadTelegram,wallets:loadWallets};if(map[name])map[name]()}
+async function loadProducts(){try{state.products=await sb('products?select=*&order=id.desc');renderProducts();$('sProducts').textContent=state.products.length;logActivity('Products synced',state.products.length+' product records loaded')}catch(e){failTable('productsTable',7,e);toast('Products: '+e.message)}}
+function durationLabel(v){const n=Number(v);if(!Number.isFinite(n))return '—';if(n<1)return Math.round(n*24)+' hours';return Number.isInteger(n)?n+' day'+(n===1?'':'s'):n+' days'}
+function renderProducts(){const q=($('productSearch')?.value||'').toLowerCase(),st=$('productStatus')?.value||'all';const rows=state.products.filter(p=>(!q||JSON.stringify(p).toLowerCase().includes(q))&&(st==='all'||String(!!p.is_active)===st));$('productsTable').innerHTML=rows.length?rows.map(p=>`<tr><td>#${esc(p.id)}</td><td><b>${esc(p.name)}</b><br><span class="muted">${esc(p.description||'')}</span></td><td>${money(p.user_price)}</td><td>${money(p.reseller_price)}</td><td>${durationLabel(p.duration_days)}</td><td>${statusP(p.is_active?'ACTIVE':'INACTIVE')}</td><td><button class="btn" onclick="openProductEdit(${Number(p.id)})">Edit</button> <button class="btn ${p.is_active?'danger':'success'}" onclick="toggleProduct(${Number(p.id)},${!p.is_active})">${p.is_active?'Disable':'Enable'}</button></td></tr>`).join(''):'<tr><td colspan="7">No products found.</td></tr>'}
+$('productForm').addEventListener('submit',async e=>{e.preventDefault();const name=$('pName').value.trim(),sel=[...document.querySelectorAll('.dur-check:checked')];if(!sel.length)return toast('Select at least one duration.');const base={name,description:$('pDescription').value.trim()||null,telegram_url:$('pTelegram').value.trim()||null,is_active:$('pActive').value==='true'};try{let n=0;for(const c of sel){const days=Number(c.dataset.days),up=Number(document.querySelector('.dur-user[data-days="'+days+'"]').value),rp=Number(document.querySelector('.dur-reseller[data-days="'+days+'"]').value);if(!Number.isFinite(up)||!Number.isFinite(rp))throw new Error('Enter both User and Reseller price for '+days+' days.');await sb('products',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({...base,user_price:up,reseller_price:rp,duration_days:days})});n++}$('productForm').reset();toast(n+' real product row(s) saved.');logActivity('Product created',n+' product variant(s) inserted into Supabase');showPage('products')}catch(e){toast('Save failed: '+e.message)}});
+function openProductEdit(id){const p=state.products.find(x=>Number(x.id)===Number(id));if(!p)return;$('editId').value=p.id;$('editName').value=p.name||'';$('editUserPrice').value=p.user_price??'';$('editResellerPrice').value=p.reseller_price??'';$('editDuration').value=p.duration_days??'';$('editActive').value=String(!!p.is_active);$('editTelegram').value=p.telegram_url||'';$('editDescription').value=p.description||'';$('editProductModal').classList.add('open')}
+$('editProductForm').addEventListener('submit',async e=>{e.preventDefault();const id=$('editId').value;const body={name:$('editName').value.trim(),user_price:Number($('editUserPrice').value),reseller_price:Number($('editResellerPrice').value),duration_days:Number($('editDuration').value),is_active:$('editActive').value==='true',telegram_url:$('editTelegram').value.trim()||null,description:$('editDescription').value.trim()||null};try{await sb('products?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(body)});closeModal('editProductModal');toast('Product updated.');logActivity('Product updated','Product #'+id+' changed');loadProducts()}catch(e){toast('Update failed: '+e.message)}});
+async function toggleProduct(id,on){try{await sb('products?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({is_active:on})});toast(on?'Product enabled.':'Product disabled.');loadProducts()}catch(e){toast('Status update failed: '+e.message)}}
+async function loadOrders(){try{state.orders=await sb('purchases?select=*&order=id.desc&limit=100');renderOrders();$('ordersBadge').textContent=state.orders.filter(o=>String(o.status||'').toLowerCase()==='pending').length;renderRecentOrders()}catch(e){failTable('ordersTable',7,e);$('recentOrders').innerHTML='<tr><td colspan="6">Order data unavailable.</td></tr>';toast('Orders: '+e.message)}}
+function renderOrders(){const q=($('orderSearch')?.value||'').toLowerCase();const rows=state.orders.filter(o=>!q||JSON.stringify(o).toLowerCase().includes(q));$('ordersTable').innerHTML=rows.length?rows.map(o=>`<tr><td>#${esc(o.id)}</td><td>${esc(o.user_id)}</td><td>${esc(o.product_id)}</td><td>${money(o.price)}</td><td>${esc(o.key_value||'—')}</td><td>${statusP(o.status)}</td><td>${date(o.purchased_at||o.created_at)}</td></tr>`).join(''):'<tr><td colspan="7">No orders found.</td></tr>'}
+function renderRecentOrders(){const rows=state.orders.slice(0,6);$('recentOrders').innerHTML=rows.length?rows.map(o=>`<tr><td>#${esc(o.id)}</td><td>${esc(o.user_id||'—').slice(0,12)}</td><td>${esc(o.product_id||'—')}</td><td>${money(o.price)}</td><td>${statusP(o.status)}</td><td>${date(o.purchased_at||o.created_at)}</td></tr>`).join(''):'<tr><td colspan="6">No purchases.</td></tr>';buildBars()}
+async function loadUsers(){try{state.users=await sb('profiles?select=*&order=created_at.desc&limit=500');renderUsers();$('sUsers').textContent=state.users.length;logActivity('Users synced',state.users.length+' profile records loaded')}catch(e){failTable('usersTable',7,e);toast('Users: '+e.message)}}
+function renderUsers(){const q=($('userSearch')?.value||'').toLowerCase();const rows=state.users.filter(u=>!q||String(u.username||'').toLowerCase().includes(q)||String(u.email||'').toLowerCase().includes(q)||String(u.id).toLowerCase().includes(q));$('usersTable').innerHTML=rows.length?rows.map(u=>`<tr><td>${esc(u.id)}</td><td><b>${esc(u.username||'—')}</b></td><td>${esc(u.email||'—')}</td><td>${money(u.balance)}</td><td>${statusP(u.role||'USER')}</td><td>${statusP(u.is_active===false?'INACTIVE':'ACTIVE')}</td><td><button class="btn" onclick="toggleUser(${JSON.stringify(u.id)},${u.is_active===false})">${u.is_active===false?'Enable':'Disable'}</button></td></tr>`).join(''):'<tr><td colspan="7">No users found.</td></tr>'}
+async function toggleUser(id,on){try{await sb('profiles?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({is_active:on,updated_at:new Date().toISOString()})});toast(on?'User enabled.':'User disabled.');loadUsers()}catch(e){toast('User update failed: '+e.message)}}
+async function loadResellers(){try{state.resellers=await sb('reseller_accounts?select=*&order=id.desc&limit=500');$('sResellers').textContent=state.resellers.length;$('resellersTable').innerHTML=state.resellers.length?state.resellers.map(r=>`<tr><td>${esc(r.reseller_id||r.id)}</td><td>${esc(r.username||'—')}</td><td>${esc(r.owner_user_id||'—')}</td><td>${esc(r.plan_name||r.plan_code||'—')}</td><td>${money(r.balance)}</td><td>${esc(r.commission_percent??'—')}%</td><td>${r.permanent?'YES':'NO'}</td><td>${date(r.created_at)}</td></tr>`).join(''):'<tr><td colspan="8">No reseller accounts found.</td></tr>';logActivity('Resellers synced',state.resellers.length+' reseller accounts loaded')}catch(e){failTable('resellersTable',8,e);toast('Resellers: '+e.message)}}
+async function loadDeposits(){try{state.deposits=await sb('deposits?select=*&order=id.desc&limit=200');const pending=state.deposits.filter(d=>String(d.status||'').toLowerCase()==='pending').length;$('sPayments').textContent=pending;$('paymentBadge').textContent=pending;$('paymentsTable').innerHTML=state.deposits.length?state.deposits.map(d=>`<tr><td>#${esc(d.id)}</td><td>${esc(d.user_id)}</td><td>${esc(d.method||'—')}</td><td>${money(d.amount)}</td><td>${esc(d.mobile||'—')}</td><td>${esc(d.transaction_id||'—')}</td><td>${statusP(d.status)}</td><td>${String(d.status||'').toLowerCase()==='pending'?`<button class="btn success" onclick="reviewDeposit(${Number(d.id)},'approved')">Approve</button> <button class="btn danger" onclick="reviewDeposit(${Number(d.id)},'rejected')">Reject</button>`:'—'}</td></tr>`).join(''):'<tr><td colspan="8">No deposit requests.</td></tr>'}catch(e){failTable('paymentsTable',8,e);$('sPayments').textContent='—';toast('Deposits: '+e.message)}}
+async function reviewDeposit(id,status){if(!confirm(status==='approved'?'Approve this deposit?':'Reject this deposit?'))return;try{await sb('deposits?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status,reviewed_at:new Date().toISOString()})});toast('Deposit '+status+'.');logActivity('Deposit reviewed','#'+id+' marked '+status);loadDeposits()}catch(e){toast('Deposit update failed: '+e.message)}}
+async function loadLicenses(){try{state.licenses=await sb('license_keys?select=*&order=id.desc&limit=500');renderLicenses()}catch(e){failTable('licensesTable',8,e);toast('Licenses: '+e.message)}}
+function renderLicenses(){const q=($('licenseSearch')?.value||'').toLowerCase();const rows=state.licenses.filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q));$('licensesTable').innerHTML=rows.length?rows.map(x=>`<tr><td>#${esc(x.id)}</td><td>${esc(x.product_id)}</td><td>${esc(x.license_key)}</td><td>${esc(x.duration_minutes??'—')} min</td><td>${statusP(x.status)}</td><td>${esc(x.device_id||'—')}</td><td>${date(x.expires_at)}</td><td>${x.status?`<button class="btn" onclick="toggleLicense(${Number(x.id)},${JSON.stringify(String(x.status).toLowerCase())})">Change</button>`:'—'}</td></tr>`).join(''):'<tr><td colspan="8">No license keys found.</td></tr>'}
+async function toggleLicense(id,current){const next=current==='active'?'disabled':'active';try{await sb('license_keys?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:next,updated_at:new Date().toISOString()})});toast('License status changed.');loadLicenses()}catch(e){toast('License update failed: '+e.message)}}
+async function loadSupport(){try{state.support=await sb('support_tickets?select=*&order=id.desc&limit=200');$('supportTable').innerHTML=state.support.length?state.support.map(x=>`<tr><td>#${esc(x.id)}</td><td>${esc(val(x,'user_id','username')||'—')}</td><td>${esc(val(x,'subject','title')||'—')}</td><td>${statusP(x.status)}</td><td>${statusP(x.priority||'normal')}</td><td>${date(x.created_at)}</td><td>${x.status?`<button class="btn" onclick="cycleTicket(${Number(x.id)},${JSON.stringify(String(x.status))})">Update</button>`:'—'}</td></tr>`).join(''):'<tr><td colspan="7">No tickets found.</td></tr>'}catch(e){failTable('supportTable',7,e);toast('Support: '+e.message)}}
+async function cycleTicket(id,current){const order=['open','pending','resolved','closed'];const i=order.indexOf(current.toLowerCase());const next=order[(i+1+order.length)%order.length];try{await sb('support_tickets?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:next,updated_at:new Date().toISOString()})});toast('Ticket moved to '+next);loadSupport()}catch(e){toast('Ticket update failed: '+e.message)}}
+async function loadTelegram(){try{state.telegram=await sb('telegram_channels?select=*&order=id.desc&limit=200');$('telegramTable').innerHTML=state.telegram.length?state.telegram.map(x=>{const url=val(x,'url','telegram_url','channel_url','link');return `<tr><td>#${esc(x.id)}</td><td>${esc(val(x,'name','title','channel_name')||'—')}</td><td>${url?`<a href="${esc(url)}" target="_blank" rel="noopener" style="color:#5fd8ff">${esc(url)}</a>`:'—'}</td><td>${statusP(x.is_active===false?'INACTIVE':'ACTIVE')}</td><td>${date(x.created_at)}</td></tr>`}).join(''):'<tr><td colspan="5">No channels found.</td></tr>'}catch(e){failTable('telegramTable',5,e);toast('Telegram: '+e.message)}}
+async function loadWallets(){try{state.wallets=await sb('wallets?select=*&order=id.desc&limit=200');state.walletTx=await sb('wallet_transactions?select=*&order=id.desc&limit=100');$('walletsTable').innerHTML=state.wallets.length?state.wallets.map(x=>`<tr><td>#${esc(x.id)}</td><td>${esc(val(x,'user_id','owner_user_id')||'—')}</td><td>${money(val(x,'balance','amount'))}</td><td>${date(val(x,'updated_at','created_at'))}</td></tr>`).join(''):'<tr><td colspan="4">No wallets.</td></tr>';$('walletTxTable').innerHTML=state.walletTx.length?state.walletTx.slice(0,50).map(x=>`<tr><td>#${esc(x.id)}</td><td>${esc(val(x,'user_id','wallet_id')||'—')}</td><td>${money(val(x,'amount','value'))}</td><td>${esc(val(x,'type','transaction_type')||'—')}</td><td>${date(val(x,'created_at','createdAt'))}</td></tr>`).join(''):'<tr><td colspan="5">No transactions.</td></tr>'}catch(e){failTable('walletsTable',4,e);failTable('walletTxTable',5,e);toast('Wallets: '+e.message)}}
+function buildBars(){const box=$('salesBars');const recent=state.orders.slice(0,7).map(x=>Number(x.price)||0).reverse();const max=Math.max(...recent,1);box.innerHTML=(recent.length?recent:[0]).map((v,i)=>`<div class="bar" style="height:${Math.max(10,Math.round(v/max*100))}%"><span>${i+1}</span></div>`).join('')}
+function failTable(id,n,e){const el=$(id);if(el)el.innerHTML=`<tr><td colspan="${n}">Unable to load live data: ${esc(e.message)}</td></tr>`}
+async function refreshAll(){await Promise.allSettled([loadProducts(),loadUsers(),loadOrders(),loadDeposits(),loadResellers(),loadLicenses(),loadSupport(),loadTelegram(),loadWallets()]);toast('Live data sync completed.')}
+function closeModal(id){$(id).classList.remove('open')}
+function applyPhoto(){const data=localStorage.getItem('rony_admin_photo');['loginLogo','brandLogo','topAvatar','settingsPhotoPreview'].forEach(id=>{const el=$(id);if(!el)return;if(data){if(el.tagName==='IMG')el.src=data;else el.innerHTML='<img src="'+data+'" alt="">'}else if(el.tagName==='IMG')el.removeAttribute('src')})}
+$('adminPhotoInput').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith('image/'))return toast('Choose an image file.');if(f.size>3*1024*1024)return toast('Photo must be 3MB or smaller.');const r=new FileReader();r.onload=()=>{localStorage.setItem('rony_admin_photo',r.result);applyPhoto();toast('Admin photo saved on this device.');};r.readAsDataURL(f)});
+window.addEventListener('click',e=>{if(e.target.classList.contains('modal'))e.target.classList.remove('open')});
+sbClient.auth.onAuthStateChange(async(_event,session)=>{if(!session){showLogin();return}try{await requireAdmin(session);showApp()}catch(e){await sbClient.auth.signOut();showLogin(e.message)}});
+(async()=>{applyPhoto();try{const {data}=await sbClient.auth.getSession();if(data.session){await requireAdmin(data.session);showApp()}else showLogin()}catch(e){showLogin(e.message||'Please login.')};})();
+</script>
+</body>
+</html>
